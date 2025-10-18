@@ -11,7 +11,7 @@ pub fn run(input: &Path, memory_size: &str) {
        \ \,\L\_\     __\//\ \
         \/_\__ \   /'__`\\ \ \
           /\ \L\ \/\  __/ \_\ \_
-          \ `\____\ \____\/\____\
+          \ `\____\ \____\/\____/
            \/_____/\/____/\/____/
         "##
     );
@@ -26,13 +26,18 @@ pub fn run(input: &Path, memory_size: &str) {
         Ok(bytecode_file) => {
             let opcodes = extract_opcodes(bytecode_file);
             vm_instance.load_program(opcodes);
+
+            // El crash report se mostrará automáticamente si hay error
+            match vm_instance.run() {
+                Ok(_) => println!("\n✓ Program completed successfully\n"),
+                Err(_) => std::process::exit(1),
+            }
         }
         Err(error) => {
             eprintln!("Error reading bytecode: {}", error);
             std::process::exit(1);
         }
     }
-    vm_instance.run().expect("Error while running the program.");
 }
 
 fn parse_size(size_str: &str) -> Result<usize, String> {
@@ -40,7 +45,6 @@ fn parse_size(size_str: &str) -> Result<usize, String> {
     let mut number_part = String::new();
     let mut unit_part = String::new();
 
-    // Separar la parte numérica de la unidad
     for c in size_str.chars() {
         if c.is_digit(10) || c == '.' {
             if !unit_part.is_empty() {
@@ -69,7 +73,6 @@ fn parse_size(size_str: &str) -> Result<usize, String> {
 
     let bytes_f64 = number * multiplier as f64;
 
-    // Chequeo de integralidad y rango
     if bytes_f64.fract() != 0.0 {
         return Err("La cantidad de bytes no es un entero".to_string());
     }
@@ -78,7 +81,6 @@ fn parse_size(size_str: &str) -> Result<usize, String> {
         return Err("El tamaño no puede ser negativo".to_string());
     }
 
-    // Comprobar que cabe en usize
     if bytes_f64 > usize::MAX as f64 {
         return Err("El tamaño excede el límite de usize".to_string());
     }

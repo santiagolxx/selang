@@ -1,4 +1,4 @@
-use crate::{Memory, OpCode, Result, VMError, vm::operations};
+use crate::{CrashReport, Memory, OpCode, Result, VMError, vm::operations};
 
 pub struct VirtualMachine {
     memory: Memory,
@@ -25,13 +25,17 @@ impl VirtualMachine {
         self.running = false;
     }
 
-    /// Ejecuta el programa completo
     pub fn run(&mut self) -> Result<()> {
         self.running = true;
         self.memory.reset();
 
         while self.running && self.pc < self.program.len() {
-            self.step()?;
+            if let Err(e) = self.step() {
+                // Generar crash report
+                let report = CrashReport::from_vm(self, &e);
+                report.display();
+                return Err(e);
+            }
         }
 
         Ok(())

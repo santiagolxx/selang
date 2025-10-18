@@ -2,7 +2,7 @@ use crate::{Result, VMError, Value};
 use std::collections::HashMap;
 
 pub struct Stack {
-    items: Vec<Value>,
+    pub items: Vec<Value>,
     limit: usize,
 }
 
@@ -58,7 +58,7 @@ impl Stack {
 }
 
 pub struct Memory {
-    stack: Stack,
+    pub stack: Stack,
     variables: HashMap<usize, Value>,
     call_stack: Vec<usize>,
 }
@@ -118,6 +118,11 @@ impl Memory {
         self.call_stack
             .pop()
             .ok_or(VMError::RuntimeError("Return without call".to_string()))
+    }
+
+    // Stack snapshot para debugging
+    pub fn get_stack_snapshot(&self) -> Vec<Value> {
+        self.stack.items.clone()
     }
 
     pub fn reset(&mut self) {
