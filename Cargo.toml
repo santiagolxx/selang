@@ -1,0 +1,11 @@
+[package]
+name = "glyph"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = { version = "4.5.42", features = ["derive"] }
+chisel = { path = "./crates/chisel" }
+sel = { path = "./crates/sel" }
+dialoguer = "0.11.0"
+colored = "3.0.0"

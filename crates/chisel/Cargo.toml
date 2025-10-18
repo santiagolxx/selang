@@ -1,0 +1,12 @@
+[package]
+name = "chisel"
+version = "0.1.0"
+edition = "2024"
+authors = ["Compiler for Sel Assembler to Sel Bytecode"]
+
+[dependencies]
+ariadne = "0.5.1"
+bincode = "2.0.1"
+chumsky = "0.10.1"
+sel = { path = "../sel" }
+serde = { version = "1.0.219", features = ["derive"] }
